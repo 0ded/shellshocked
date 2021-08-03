@@ -2,8 +2,8 @@
 
 if [ -f $1 ]
 then
-touch $1
 chmod +x $1
+sudo cp $1 /usr/local/bin/
 else
   echo "$1 does not exist"
 fi
