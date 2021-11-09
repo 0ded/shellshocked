@@ -83,7 +83,7 @@ def remove_block(inb):
 
 
 def remove_includes(inb):
-    inb = re.sub("#.*?(\".*?\"|>)", '', inb)
+    inb = re.sub("#.*?(\".*?\"|>|\n)", '', inb)
     return inb
 
 def create_h_file(filename, funcs):
