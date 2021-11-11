@@ -13,6 +13,7 @@ def main():
         inb = remove_block(inb)
         inb = remove_commands(inb)
         inb = remove_includes(inb)
+        inb = remove_defines(inb)
         create_h_file(filename, inb)
 
 
@@ -56,12 +57,13 @@ def remove_brackets(inb):
 
 def remove_commands(inb):
     inb = re.sub("\n.*?;", '', inb)
-    inb = re.sub("(if|while|else|else if).*?\n", '', inb)
+    inb = re.sub("(if|while|else|else if|typedef).*?\n", '', inb)
     # inb = re.sub("for.*?;.*?;.*?\)", '', inb)
     return inb
 
 
 def remove_block(inb):
+
     get_sub = False
     count = 0
     sub = ""
@@ -83,16 +85,26 @@ def remove_block(inb):
 
 
 def remove_includes(inb):
-    inb = re.sub("#.*?(\".*?\"|>|\n)", '', inb)
+    inb = re.sub("#.*?(\".*?\"|>)", '', inb)
     return inb
+
+
+def remove_defines(inb):
+    inb = re.sub("#.*?\n", '', inb)
+    return inb
+
 
 def create_h_file(filename, funcs):
     h_file = ".h".join(filename.rsplit(".c", 1))
+    def_name = h_file.capitalize().replace(".", "_")
     open(h_file, 'w').close()
     with open(h_file, "a") as file:
+        file.write("#ifndef " + def_name + "\n")
+        file.write("#define " + def_name + "\n")
         for func in funcs.split("\n"):
-            if func:
+            if func and not func.isspace():
                 file.write(func +";\n")
+        file.write("#endif")
         file.close()
 
 
